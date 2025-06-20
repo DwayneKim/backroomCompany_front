@@ -3,13 +3,22 @@ import React, { useEffect , useState } from "react";
 import {getStatistics} from "@/app/api/v1/stage-stat/stageStat";
 import '../css/StatisticPage.css'
 
+interface StatisticItem {
+    playerCount: number
+    stageIndex: number
+    difficulty: string
+    isQuotaSuccess: boolean
+    targetQuota: number
+}
+
+
 const StatisticPage = () => {
 
     const [playerCount, setPlayerCount] = useState<number | null>(null)
     const [difficulty, setDifficulty] = useState<string | null>(null)
     const [isQuotaSuccess, setIsQuotaSuccess] = useState<boolean | null>(null)
     const [stageIndex, setStageIndex] = useState<number | null>(null)
-    const [statisticsData, setStatisticsData] = useState([]);
+    const [statisticsData, setStatisticsData] = useState<StatisticItem[]>([]);
 
     const getStatisticsData = async (
         playerCount: number | null,
