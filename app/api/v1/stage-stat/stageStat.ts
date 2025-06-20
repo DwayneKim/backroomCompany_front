@@ -15,7 +15,7 @@ export const getItemStatistics = async (playerCount:number, difficulty: string, 
     });
 };
 
-export const getDeathStatistics = async (playerCount:number, difficulty: string, stageIndex: number, startTime: string, endTime: string) => {
+export const getDeathStatistics = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null, startTime: string | null, endTime: string | null) => {
     return baseClient.get(`/stat/get-death-stat`, {
         params: {
             playerCount,
