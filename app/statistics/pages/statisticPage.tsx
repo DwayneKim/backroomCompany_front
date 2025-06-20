@@ -4,6 +4,12 @@ import {getStatistics} from "@/app/api/v1/stage-stat/stageStat";
 import '../css/StatisticPage.css'
 
 interface StatisticItem {
+    successCount: number
+    successProbability: number
+    stageStatResponse: StageStatResponse[]
+}
+
+interface StageStatResponse {
     playerCount: number
     stageIndex: number
     difficulty: string
@@ -18,7 +24,11 @@ const StatisticPage = () => {
     const [difficulty, setDifficulty] = useState<string | null>(null)
     const [isQuotaSuccess, setIsQuotaSuccess] = useState<boolean | null>(null)
     const [stageIndex, setStageIndex] = useState<number | null>(null)
-    const [statisticsData, setStatisticsData] = useState<StatisticItem[]>([]);
+    const [statisticsData, setStatisticsData] = useState<StatisticItem>({
+        successCount : 0,
+        successProbability : 0.0,
+        stageStatResponse : []
+    });
 
     const getStatisticsData = async (
         playerCount: number | null,
@@ -92,11 +102,13 @@ const StatisticPage = () => {
             </div>
 
             <div className="stat-list">
-                <p className="stat-empty">조회된 결과 : {statisticsData.length} 개</p>
-                {statisticsData.length === 0 ? (
+                <p className="stat-empty">승리한 횟수 : {statisticsData.successCount} </p>
+                <p className="stat-empty">승리 확률 : {statisticsData.successProbability} </p>
+                <p className="stat-empty">조회된 데이터 : {statisticsData.stageStatResponse.length} 개</p>
+                {statisticsData.stageStatResponse.length === 0 ? (
                     <p className="stat-empty">데이터가 없습니다</p>
                 ) : (
-                    statisticsData.map((item, index) => (
+                    statisticsData.stageStatResponse.map((item, index) => (
                         <div key={index} className="stat-card">
                             <p><strong>플레이어 수:</strong> {item.playerCount}</p>
                             <p><strong>스테이지:</strong> {item.stageIndex}</p>
