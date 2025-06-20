@@ -45,7 +45,8 @@ const DeathStatistic = () => {
             startTime,
             endTime
         )
-        console.log(data)
+        setStartTime()
+        setEndTime()
         setDeathStatistics(data.data.content)
     }
 

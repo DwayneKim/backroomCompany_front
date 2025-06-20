@@ -1,5 +1,5 @@
 import TopMenuPage from "@/app/topMenu/pages/topMenuPage";
-import DeathStatistic from "@/app/death/pages/DeathStatistic.tsx";
+import DeathStatistic from "@/app/death/pages/DeathStatistic";
 
 export default async function Page() {
 
