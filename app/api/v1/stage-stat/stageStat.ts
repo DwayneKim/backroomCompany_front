@@ -1,0 +1,40 @@
+import { baseClient } from "../client";
+
+
+
+export const getItemStatistics = async (playerCount:number, difficulty: string, stageIndex: number, startTime: string, endTime: string, boughtTime: string) => {
+    return baseClient.get(`/stat/get-item-stat`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            startTime,
+            endTime,
+            boughtTime,
+        }
+    });
+};
+
+export const getDeathStatistics = async (playerCount:number, difficulty: string, stageIndex: number, startTime: string, endTime: string) => {
+    return baseClient.get(`/stat/get-death-stat`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            startTime,
+            endTime,
+        }
+    });
+};
+
+export const getStatistics = async (playerCount:number | null, difficulty: string | null, isQuotaSuccess: boolean | null, stageIndex: number | null) => {
+    return baseClient.get(`/stat/get-stage-stat`, {
+        params: {
+            playerCount,
+            difficulty,
+            isQuotaSuccess,
+            stageIndex
+        }
+    });
+};
+
