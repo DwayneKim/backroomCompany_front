@@ -15,6 +15,7 @@ interface StageStatResponse {
     difficulty: string
     isQuotaSuccess: boolean
     targetQuota: number
+    accumulatedQuota : number
     executionResultMap: Record<number, Record<string, number>>
 }
 
@@ -126,6 +127,7 @@ const StatisticPage = () => {
                             <p><strong>스테이지:</strong> {item.stageIndex}</p>
                             <p><strong>난이도:</strong> {item.difficulty}</p>
                             <p><strong>목표 할당량:</strong> {item.targetQuota}</p>
+                            <p><strong>스테이지 누적 할당량:</strong> {item.accumulatedQuota}</p>
                             {Object.keys(item.executionResultMap).length === 0 ? (
                                 <p className="stat-empty">실행 기록 없음</p>
                             ) : (
