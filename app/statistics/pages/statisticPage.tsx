@@ -114,8 +114,8 @@ const StatisticPage = () => {
             </div>
 
             <div className="stat-list">
-                <p className="stat-empty">승리한 횟수 : {statisticsData.successCount} </p>
-                <p className="stat-empty">승리 확률 : {statisticsData.successProbability} </p>
+                <p className="stat-empty">승리한 횟수 : {statisticsData.successCount} 회</p>
+                <p className="stat-empty">승리 확률 : {statisticsData.successProbability} %</p>
                 <p className="stat-empty">조회된 데이터 : {statisticsData.stageStatResponse.length} 개</p>
                 {statisticsData.stageStatResponse.length === 0 ? (
                     <p className="stat-empty">데이터가 없습니다</p>

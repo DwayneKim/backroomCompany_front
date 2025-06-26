@@ -11,6 +11,7 @@ interface ItemDataResponse{
 
 interface DetailItemDataResponse{
     description: string;
+    boughtTime: string;
     average: number;
     max: number;
     min: number;
@@ -32,7 +33,8 @@ const StatisticPage = () => {
     const getItemData = async (
         playerCount: number | null,
         difficulty: string | null,
-        stageIndex: number | null
+        stageIndex: number | null,
+        boughtTime: string | null,
     ) => {
         console.log("test")
         const data = await getItemStatistics(
@@ -41,15 +43,15 @@ const StatisticPage = () => {
             stageIndex,
             null,
             null,
-            null
+            boughtTime,
         )
         console.log(data)
         setItemData(data.data.content)
     }
 
     useEffect(() => {
-        getItemData(playerCount, difficulty, stageIndex)
-    },[playerCount, difficulty, stageIndex])
+        getItemData(playerCount, difficulty, stageIndex, boughtTime)
+    },[playerCount, difficulty, stageIndex, boughtTime])
 
     return (
         <div className="stat-container">
@@ -90,12 +92,12 @@ const StatisticPage = () => {
                     <option value="3">3</option>
                 </select>
                 <select
-                    value={boughtTime ?? ''}
+                    value={boughtTime ?? ""}
                     onChange={(e) => setBoughtTime(e.target.value === '' ? null : e.target.value)}
                 >
                     <option value="">아이템 통계</option>
-                    <option value="0">스테이지 진입 전</option>
-                    <option value="1">스테이지 진입 후</option>
+                    <option value="BEFORE">스테이지 진입 전</option>
+                    <option value="AFTER">스테이지 진입 후</option>
                 </select>
             </div>
 
@@ -107,7 +109,7 @@ const StatisticPage = () => {
                     itemData.items.map((item, index) => (
                         <div key={index} className="stat-card">
                             <p><strong>아이템 이름:</strong> {item.description}</p>
-                            <p><strong>아이템 구매 타이밍:</strong> {item.description == 'BEFORE' ? '스테이지 진입 전' : '스테이지 진입 후' }</p>
+                            <p><strong>아이템 구매 타이밍:</strong> {item.boughtTime == 'BEFORE' ? '스테이지 진입 전' : '스테이지 진입 후' }</p>
                             <p><strong>평균 값 :</strong> {item.average}</p>
                             <p><strong>최대치:</strong> {item.max}</p>
                             <p><strong>최소치:</strong> {item.min}</p>
