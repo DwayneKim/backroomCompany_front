@@ -64,7 +64,7 @@ const StatisticPage = () => {
         console.log(data)
         setStatisticsData(data.data.content)
 
-        data.data.content.stageStatResponse = data.data.content.stageStatResponse.map((item) => ({
+        data.data.content.stageStatResponse = data.data.content.stageStatResponse.map((item: StageStatResponse) => ({
             ...item,
             executionResultMap: convertToExecutionResultMap(item.executionResultMap),
         }));
