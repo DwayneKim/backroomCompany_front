@@ -15,8 +15,8 @@ interface StageStatResponse {
     difficulty: string
     isQuotaSuccess: boolean
     targetQuota: number
+    executionResultMap: Record<number, Record<string, number>>
 }
-
 
 const StatisticPage = () => {
 
@@ -29,6 +29,24 @@ const StatisticPage = () => {
         successProbability : 0.0,
         stageStatResponse : []
     });
+
+    function convertToExecutionResultMap(
+        obj: Record<number | string, Record<string, number>>
+    ): Map<number, Map<string, number>> {
+        const outerMap = new Map<number, Map<string, number>>();
+
+        for (const [key, inner] of Object.entries(obj)) {
+            const innerMap = new Map<string, number>();
+
+            for (const [innerKey, value] of Object.entries(inner)) {
+                innerMap.set(innerKey, value);
+            }
+
+            outerMap.set(Number(key), innerMap);
+        }
+
+        return outerMap;
+    }
 
     const getStatisticsData = async (
         playerCount: number | null,
@@ -45,6 +63,11 @@ const StatisticPage = () => {
         )
         console.log(data)
         setStatisticsData(data.data.content)
+
+        data.data.content.stageStatResponse = data.data.content.stageStatResponse.map((item) => ({
+            ...item,
+            executionResultMap: convertToExecutionResultMap(item.executionResultMap),
+        }));
     }
 
     useEffect(() => {
@@ -79,17 +102,6 @@ const StatisticPage = () => {
                 </select>
 
                 <select
-                    value={isQuotaSuccess === null ? '' : isQuotaSuccess.toString()}
-                    onChange={(e) =>
-                        setIsQuotaSuccess(e.target.value === '' ? null : e.target.value === 'true')
-                    }
-                >
-                    <option value="">성공 여부</option>
-                    <option value="true">성공</option>
-                    <option value="false">실패</option>
-                </select>
-
-                <select
                     value={stageIndex ?? ''}
                     onChange={(e) => setStageIndex(e.target.value === '' ? null : Number(e.target.value))}
                 >
@@ -113,8 +125,28 @@ const StatisticPage = () => {
                             <p><strong>플레이어 수:</strong> {item.playerCount}</p>
                             <p><strong>스테이지:</strong> {item.stageIndex}</p>
                             <p><strong>난이도:</strong> {item.difficulty}</p>
-                            <p><strong>스테이지 성공 여부:</strong> {item.isQuotaSuccess ? '성공' : '실패'}</p>
                             <p><strong>목표 할당량:</strong> {item.targetQuota}</p>
+                            {Object.keys(item.executionResultMap).length === 0 ? (
+                                <p className="stat-empty">실행 기록 없음</p>
+                            ) : (
+                                Object.entries(item.executionResultMap).map(([execKey, resultMap]) => (
+                                    <div key={execKey} className="stat-subcard">
+                                        <p><strong>스테이지 {execKey}</strong></p>
+
+                                        {Object.keys(resultMap).length === 0 ? (
+                                            <p className="stat-empty">결과 없음</p>
+                                        ) : (
+                                            <ul>
+                                                {Object.entries(resultMap).map(([resultName, count]) => (
+                                                    <li key={resultName}>
+                                                        {resultName === "SUCCESS" ? "성공 횟수" : "실패 횟수"} : {count} 회
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                ))
+                            )}
                         </div>
                     ))
                 )}

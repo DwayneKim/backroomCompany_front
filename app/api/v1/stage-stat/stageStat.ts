@@ -2,7 +2,7 @@ import { baseClient } from "../client";
 
 
 
-export const getItemStatistics = async (playerCount:number, difficulty: string, stageIndex: number, startTime: string, endTime: string, boughtTime: string) => {
+export const getItemStatistics = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null, startTime: string | null, endTime: string | null, boughtTime: string | null) => {
     return baseClient.get(`/stat/get-item-stat`, {
         params: {
             playerCount,
