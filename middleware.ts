@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 const ALLOWED_IPS = [
-    '121.165.94.138',
+    '121.165.94.37',
 ]
 
 export function middleware(request: NextRequest) {
