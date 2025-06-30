@@ -13,17 +13,17 @@ interface StageStatResponse {
     playerCount: number
     stageIndex: number
     difficulty: string
-    isQuotaSuccess: boolean
+    quotaSuccess: boolean
     targetQuota: number
     accumulatedCount : number
-    executionResultMap: Record<number, Record<string, number>>
+    executionResultMap: Map<number, Map<string, number>>
 }
 
 const StatisticPage = () => {
 
     const [playerCount, setPlayerCount] = useState<number | null>(null)
     const [difficulty, setDifficulty] = useState<string | null>(null)
-    const [isQuotaSuccess, setIsQuotaSuccess] = useState<boolean | null>(null)
+    const [quotaSuccess, setQuotaSuccess] = useState<boolean | null>(null)
     const [stageIndex, setStageIndex] = useState<number | null>(null)
     const [statisticsData, setStatisticsData] = useState<StatisticItem>({
         successCount : 0,
@@ -32,20 +32,14 @@ const StatisticPage = () => {
     });
 
     function convertToExecutionResultMap(
-        obj: Record<number | string, Record<string, number>>
+        obj: Record<string, Record<string, number>>
     ): Map<number, Map<string, number>> {
-        const outerMap = new Map<number, Map<string, number>>();
-
-        for (const [key, inner] of Object.entries(obj)) {
+        const outerMap = new Map();
+        Object.entries(obj).forEach(([key, value]) => {
             const innerMap = new Map<string, number>();
-
-            for (const [innerKey, value] of Object.entries(inner)) {
-                innerMap.set(innerKey, value);
-            }
-
+            Object.entries(value).forEach(([k, v]) => innerMap.set(k, v));
             outerMap.set(Number(key), innerMap);
-        }
-
+        });
         return outerMap;
     }
 
@@ -62,18 +56,31 @@ const StatisticPage = () => {
             isQuotaSuccess,
             stageIndex
         )
-        console.log(data)
-        setStatisticsData(data.data.content)
 
-        data.data.content.stageStatResponse = data.data.content.stageStatResponse.map((item: StageStatResponse) => ({
-            ...item,
-            executionResultMap: convertToExecutionResultMap(item.executionResultMap),
-        }));
+        setStatisticsData(data.data.content)
+        const response = {
+            ...data.data.content,
+            stageStatResponse: data.data.content.stageStatResponse.map((item: StageStatResponse) => ({
+                ...item,
+                executionResultMap:
+                    item.executionResultMap instanceof Map
+                        ? item.executionResultMap
+                        : convertToExecutionResultMap(item.executionResultMap),
+            })),
+        };
+
+        console.log('실행결과맵 확인:', data.data.content.stageStatResponse.executionResultMap, 'is Map:', data.data.content.stageStatResponse.executionResultMap instanceof Map);
+        console.log(response)
+
+        setStatisticsData(response)
+
+
+        console.log("response", response);
     }
 
     useEffect(() => {
-        getStatisticsData(playerCount, difficulty, isQuotaSuccess, stageIndex)
-    },[playerCount, difficulty, isQuotaSuccess, stageIndex])
+        getStatisticsData(playerCount, difficulty, quotaSuccess, stageIndex)
+    },[playerCount, difficulty, quotaSuccess, stageIndex])
 
     return (
         <div className="stat-container">
@@ -107,10 +114,9 @@ const StatisticPage = () => {
                     onChange={(e) => setStageIndex(e.target.value === '' ? null : Number(e.target.value))}
                 >
                     <option value="">스테이지</option>
-                    <option value="0">0</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
+                    {[0, 1, 2, 3].map(i => (
+                        <option key={i} value={i}>{i}</option>
+                    ))}
                 </select>
             </div>
 
@@ -118,6 +124,7 @@ const StatisticPage = () => {
                 <p className="stat-empty">승리한 횟수 : {statisticsData.successCount} 회</p>
                 <p className="stat-empty">승리 확률 : {statisticsData.successProbability} %</p>
                 <p className="stat-empty">조회된 데이터 : {statisticsData.stageStatResponse.length} 개</p>
+
                 {statisticsData.stageStatResponse.length === 0 ? (
                     <p className="stat-empty">데이터가 없습니다</p>
                 ) : (
@@ -127,28 +134,44 @@ const StatisticPage = () => {
                             <p><strong>스테이지:</strong> {item.stageIndex}</p>
                             <p><strong>난이도:</strong> {item.difficulty}</p>
                             <p><strong>목표 할당량:</strong> {item.targetQuota}</p>
+                            <p>
+                                <strong>승리 여부:</strong>{" "}
+                                <span
+                                    style={{
+                                        display: "inline-block",
+                                        padding: "4px 8px",
+                                        borderRadius: "12px",
+                                        fontWeight: "bold",
+                                        fontSize: "0.875rem",
+                                        backgroundColor: item.quotaSuccess ? "#d1fae5" : "#fee2e2",
+                                        color: item.quotaSuccess ? "#065f46" : "#991b1b",
+                                    }}
+                                >
+                                {item.quotaSuccess ? "성공" : "실패"}
+                              </span>
+                            </p>
                             <p><strong>스테이지 누적 할당량:</strong> {item.accumulatedCount}</p>
-                            {Object.keys(item.executionResultMap).length === 0 ? (
-                                <p className="stat-empty">실행 기록 없음</p>
-                            ) : (
-                                Object.entries(item.executionResultMap).map(([execKey, resultMap]) => (
-                                    <div key={execKey} className="stat-subcard">
-                                        <p><strong>스테이지 {execKey}</strong></p>
 
-                                        {Object.keys(resultMap).length === 0 ? (
-                                            <p className="stat-empty">결과 없음</p>
-                                        ) : (
-                                            <ul>
-                                                {Object.entries(resultMap).map(([resultName, count]) => (
-                                                    <li key={resultName}>
-                                                        {resultName === "SUCCESS" ? "성공 횟수" : "실패 횟수"} : {count} 회
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        )}
-                                    </div>
-                                ))
-                            )}
+                            {/*{item.executionResultMap instanceof Map && item.executionResultMap.size > 0 ? (*/}
+                            {/*    Array.from(item.executionResultMap.entries()).map(([execKey, resultMap]) => (*/}
+                            {/*        <div key={execKey} className="stat-subcard">*/}
+                            {/*            <p><strong>스테이지 {execKey}</strong></p>*/}
+                            {/*            {resultMap.size === 0 ? (*/}
+                            {/*                <p className="stat-empty">결과 없음</p>*/}
+                            {/*            ) : (*/}
+                            {/*                <ul>*/}
+                            {/*                    {Array.from(resultMap.entries()).map(([resultName, count]) => (*/}
+                            {/*                        <li key={resultName}>*/}
+                            {/*                            {resultName === "SUCCESS" ? "성공 횟수" : "실패 횟수"} : {count} 회*/}
+                            {/*                        </li>*/}
+                            {/*                    ))}*/}
+                            {/*                </ul>*/}
+                            {/*            )}*/}
+                            {/*        </div>*/}
+                            {/*    ))*/}
+                            {/*) : (*/}
+                            {/*    <p className="stat-empty">실행 기록 없음</p>*/}
+                            {/*)}*/}
                         </div>
                     ))
                 )}
