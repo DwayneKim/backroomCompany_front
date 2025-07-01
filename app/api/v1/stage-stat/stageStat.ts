@@ -38,3 +38,24 @@ export const getStatistics = async (playerCount:number | null, difficulty: strin
     });
 };
 
+export const getItemBeforeStatistics = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null, boughtTime: string | null) => {
+    return baseClient.get(`/stat/get-item-stat/before`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            boughtTime,
+        }
+    });
+};
+
+export const getAvgDeathStatistics = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null) => {
+    return baseClient.get(`/stat/get-death-stat/avg`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex
+        }
+    });
+};
+

@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect , useState } from "react";
-import {getDeathStatistics} from "@/app/api/v1/stage-stat/stageStat";
+import {getAvgDeathStatistics, getDeathStatistics} from "@/app/api/v1/stage-stat/stageStat";
 import "../css/DeathPage.css"
 
 interface DeathData {
@@ -29,6 +29,7 @@ const DeathStatistic = () => {
         stageIndex : -1,
         deathData : []
     })
+    const [avgDeathStat, setAvgDeathStat] = useState<number | null>(0.00)
 
     const getDeathStatisticsData = async (
         playerCount: number | null,
@@ -48,8 +49,24 @@ const DeathStatistic = () => {
         setDeathStatistics(data.data.content)
     }
 
+    const getAvgDeathStatisticsData = async (
+        playerCount: number | null,
+        difficulty: string | null,
+        stageIndex: number | null,
+    ) => {
+        console.log("test")
+        const data = await getAvgDeathStatistics(
+            playerCount,
+            difficulty,
+            stageIndex,
+        )
+        console.log(data.data.content)
+        setAvgDeathStat(data.data.content)
+    }
+
     useEffect(() => {
         getDeathStatisticsData(playerCount, difficulty, stageIndex, startTime, endTime)
+        getAvgDeathStatisticsData(playerCount, difficulty, stageIndex)
     },[playerCount, difficulty, stageIndex, endTime, startTime])
 
     return (
@@ -93,9 +110,12 @@ const DeathStatistic = () => {
 
             <div className="death-statistics-wrapper">
                 <p className="death-statistics-title">
-                    난이도: {deathStatistics.difficulty} / 스테이지: {deathStatistics.stageIndex}
+                    난이도: {deathStatistics.difficulty} / 스테이지: {deathStatistics.stageIndex != -1 ? stageIndex : "전체"}
                 </p>
-                <p className="death-statistics-count">
+                <p className="death-statistics-title">
+                    평균 사망 수 :  {avgDeathStat} 명
+                </p>
+                <p className="death-statistics-title">
                     조회된 결과: {deathStatistics.deathData.length}개
                 </p>
 
