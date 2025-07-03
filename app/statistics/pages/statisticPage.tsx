@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect , useState } from "react";
-import {getStatistics} from "@/app/api/v1/stage-stat/stageStat";
+import {getPlaytimeStatistics, getStatistics} from "@/app/api/v1/stage-stat/stageStat";
 import '../css/StatisticPage.css'
 
 interface StatisticItem {
@@ -31,25 +31,12 @@ const StatisticPage = () => {
         stageStatResponse : []
     });
 
-    function convertToExecutionResultMap(
-        obj: Record<string, Record<string, number>>
-    ): Map<number, Map<string, number>> {
-        const outerMap = new Map();
-        Object.entries(obj).forEach(([key, value]) => {
-            const innerMap = new Map<string, number>();
-            Object.entries(value).forEach(([k, v]) => innerMap.set(k, v));
-            outerMap.set(Number(key), innerMap);
-        });
-        return outerMap;
-    }
-
     const getStatisticsData = async (
         playerCount: number | null,
         difficulty: string | null,
         isQuotaSuccess: boolean | null,
         stageIndex: number | null
     ) => {
-        console.log("test")
         const data = await getStatistics(
             playerCount,
             difficulty,
@@ -58,24 +45,7 @@ const StatisticPage = () => {
         )
 
         setStatisticsData(data.data.content)
-        const response = {
-            ...data.data.content,
-            stageStatResponse: data.data.content.stageStatResponse.map((item: StageStatResponse) => ({
-                ...item,
-                executionResultMap:
-                    item.executionResultMap instanceof Map
-                        ? item.executionResultMap
-                        : convertToExecutionResultMap(item.executionResultMap),
-            })),
-        };
-
-        console.log('실행결과맵 확인:', data.data.content.stageStatResponse.executionResultMap, 'is Map:', data.data.content.stageStatResponse.executionResultMap instanceof Map);
-        console.log(response)
-
-        setStatisticsData(response)
-
-
-        console.log("response", response);
+        console.log(data)
     }
 
     useEffect(() => {
@@ -121,10 +91,6 @@ const StatisticPage = () => {
             </div>
 
             <div className="stat-list">
-                <p className="stat-empty">승리한 횟수 : {statisticsData.successCount} 회</p>
-                <p className="stat-empty">승리 확률 : {statisticsData.successProbability} %</p>
-                <p className="stat-empty">조회된 데이터 : {statisticsData.stageStatResponse.length} 개</p>
-
                 {statisticsData.stageStatResponse.length === 0 ? (
                     <p className="stat-empty">데이터가 없습니다</p>
                 ) : (

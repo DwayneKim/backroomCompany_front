@@ -58,9 +58,18 @@
 }
 
 .quota-card {
-    flex: 1 1 calc(33.333% - 20px);
-    background-color: #f5f5f5;
+    flex: 1 1 calc(50% - 20px);
+    background-color: #ffffd9;
     padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    min-width: 280px;
+    box-sizing: border-box;
+}
+
+.quota-detail-card{
+    background-color: #ffffa1;
+    padding: 15px;
     border-radius: 12px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     min-width: 280px;
