@@ -70,3 +70,25 @@ export const getQuotaStatistics = async (playerCount:number | null, difficulty: 
     });
 };
 
+export const getPlaytimeStatistics = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null, stageType: string | null) => {
+    return baseClient.get(`/stat/play-time`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType
+        }
+    });
+};
+
+export const getSuccessStatistics = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null, stageType: string | null) => {
+    return baseClient.get(`/stat/success-statistics`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType
+        }
+    });
+};
+

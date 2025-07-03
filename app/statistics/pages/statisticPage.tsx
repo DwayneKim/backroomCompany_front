@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect , useState } from "react";
-import {getQuotaStatistics, getStatistics} from "@/app/api/v1/stage-stat/stageStat";
+import {getPlaytimeStatistics, getStatistics} from "@/app/api/v1/stage-stat/stageStat";
 import '../css/StatisticPage.css'
 
 interface StatisticItem {
@@ -19,64 +19,17 @@ interface StageStatResponse {
     executionResultMap: Map<number, Map<string, number>>
 }
 
-interface DetailQuotaResponse {
-    min: number;
-    max: number;
-    avg: number;
-    median: number;
-}
-
 const StatisticPage = () => {
 
     const [playerCount, setPlayerCount] = useState<number | null>(null)
     const [difficulty, setDifficulty] = useState<string | null>(null)
     const [quotaSuccess, setQuotaSuccess] = useState<boolean | null>(null)
     const [stageIndex, setStageIndex] = useState<number | null>(null)
-    const [overQuota, setOverQuota] = useState<DetailQuotaResponse>({
-        min: 0,
-        max: 0,
-        avg: 0.0,
-        median: 0,
-    })
-    const [shortageQuota, setShortageQuota] = useState<DetailQuotaResponse>({
-        min: 0,
-        max: 0,
-        avg: 0.0,
-        median: 0,
-    })
     const [statisticsData, setStatisticsData] = useState<StatisticItem>({
         successCount : 0,
         successProbability : 0.0,
         stageStatResponse : []
     });
-
-    function convertToExecutionResultMap(
-        obj: Record<string, Record<string, number>>
-    ): Map<number, Map<string, number>> {
-        const outerMap = new Map();
-        Object.entries(obj).forEach(([key, value]) => {
-            const innerMap = new Map<string, number>();
-            Object.entries(value).forEach(([k, v]) => innerMap.set(k, v));
-            outerMap.set(Number(key), innerMap);
-        });
-        return outerMap;
-    }
-
-    const getQuotaData = async (
-        playerCount: number | null,
-        difficulty: string | null,
-        stageIndex: number | null,
-        stageType: string | null,
-    ) => {
-        const data = await getQuotaStatistics(
-            playerCount,
-            difficulty,
-            stageIndex,
-            stageType,
-        )
-        setOverQuota(data.data.content.overQuota)
-        setShortageQuota(data.data.content.shortageQuota)
-    }
 
     const getStatisticsData = async (
         playerCount: number | null,
@@ -92,29 +45,11 @@ const StatisticPage = () => {
         )
 
         setStatisticsData(data.data.content)
-        const response = {
-            ...data.data.content,
-            stageStatResponse: data.data.content.stageStatResponse.map((item: StageStatResponse) => ({
-                ...item,
-                executionResultMap:
-                    item.executionResultMap instanceof Map
-                        ? item.executionResultMap
-                        : convertToExecutionResultMap(item.executionResultMap),
-            })),
-        };
-
-        console.log('실행결과맵 확인:', data.data.content.stageStatResponse.executionResultMap, 'is Map:', data.data.content.stageStatResponse.executionResultMap instanceof Map);
-        console.log(response)
-
-        setStatisticsData(response)
-
-
-        console.log("response", response);
+        console.log(data)
     }
 
     useEffect(() => {
         getStatisticsData(playerCount, difficulty, quotaSuccess, stageIndex)
-        getQuotaData(playerCount, difficulty, stageIndex, null)
     },[playerCount, difficulty, quotaSuccess, stageIndex])
 
     return (
@@ -156,32 +91,6 @@ const StatisticPage = () => {
             </div>
 
             <div className="stat-list">
-                <div className="quota-grid">
-                    {/* 승리 통계 */}
-                    <div className="quota-card">
-                        <p>승리한 횟수 : {statisticsData.successCount} 회</p>
-                        <p>승리 확률 : {statisticsData.successProbability} %</p>
-                        <p>조회된 데이터 : {statisticsData.stageStatResponse.length} 개</p>
-                    </div>
-
-                    {/* 초과 할당량 */}
-                    <div className="quota-card">
-                        <p>승리 시 최대 초과 할당량 : {overQuota.max} 개</p>
-                        <p>승리 시 최소 초과 할당량 : {overQuota.min} $</p>
-                        <p>승리 시 평균 초과 할당량 : {overQuota.avg} $</p>
-                        <p>승리 시 중간 초과 할당량 : {overQuota.median} $</p>
-                    </div>
-
-                    {/* 부족 할당량 */}
-                    <div className="quota-card">
-                        <p>실패 시 최대 부족 할당량 : {shortageQuota.max} 개</p>
-                        <p>실패 시 최소 부족 할당량 : {shortageQuota.min} $</p>
-                        <p>실패 시 평균 부족 할당량 : {shortageQuota.avg} $</p>
-                        <p>실패 시 중간 부족 할당량 : {shortageQuota.median} $</p>
-                    </div>
-                </div>
-
-
                 {statisticsData.stageStatResponse.length === 0 ? (
                     <p className="stat-empty">데이터가 없습니다</p>
                 ) : (
