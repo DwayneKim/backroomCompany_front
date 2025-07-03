@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect , useState } from "react";
-import {getStatistics} from "@/app/api/v1/stage-stat/stageStat";
+import {getQuotaStatistics, getStatistics} from "@/app/api/v1/stage-stat/stageStat";
 import '../css/StatisticPage.css'
 
 interface StatisticItem {
@@ -19,12 +19,31 @@ interface StageStatResponse {
     executionResultMap: Map<number, Map<string, number>>
 }
 
+interface DetailQuotaResponse {
+    min: number;
+    max: number;
+    avg: number;
+    median: number;
+}
+
 const StatisticPage = () => {
 
     const [playerCount, setPlayerCount] = useState<number | null>(null)
     const [difficulty, setDifficulty] = useState<string | null>(null)
     const [quotaSuccess, setQuotaSuccess] = useState<boolean | null>(null)
     const [stageIndex, setStageIndex] = useState<number | null>(null)
+    const [overQuota, setOverQuota] = useState<DetailQuotaResponse>({
+        min: 0,
+        max: 0,
+        avg: 0.0,
+        median: 0,
+    })
+    const [shortageQuota, setShortageQuota] = useState<DetailQuotaResponse>({
+        min: 0,
+        max: 0,
+        avg: 0.0,
+        median: 0,
+    })
     const [statisticsData, setStatisticsData] = useState<StatisticItem>({
         successCount : 0,
         successProbability : 0.0,
@@ -43,13 +62,28 @@ const StatisticPage = () => {
         return outerMap;
     }
 
+    const getQuotaData = async (
+        playerCount: number | null,
+        difficulty: string | null,
+        stageIndex: number | null,
+        stageType: string | null,
+    ) => {
+        const data = await getQuotaStatistics(
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType,
+        )
+        setOverQuota(data.data.content.overQuota)
+        setShortageQuota(data.data.content.shortageQuota)
+    }
+
     const getStatisticsData = async (
         playerCount: number | null,
         difficulty: string | null,
         isQuotaSuccess: boolean | null,
         stageIndex: number | null
     ) => {
-        console.log("test")
         const data = await getStatistics(
             playerCount,
             difficulty,
@@ -80,6 +114,7 @@ const StatisticPage = () => {
 
     useEffect(() => {
         getStatisticsData(playerCount, difficulty, quotaSuccess, stageIndex)
+        getQuotaData(playerCount, difficulty, stageIndex, null)
     },[playerCount, difficulty, quotaSuccess, stageIndex])
 
     return (
@@ -121,9 +156,31 @@ const StatisticPage = () => {
             </div>
 
             <div className="stat-list">
-                <p className="stat-empty">승리한 횟수 : {statisticsData.successCount} 회</p>
-                <p className="stat-empty">승리 확률 : {statisticsData.successProbability} %</p>
-                <p className="stat-empty">조회된 데이터 : {statisticsData.stageStatResponse.length} 개</p>
+                <div className="quota-grid">
+                    {/* 승리 통계 */}
+                    <div className="quota-card">
+                        <p>승리한 횟수 : {statisticsData.successCount} 회</p>
+                        <p>승리 확률 : {statisticsData.successProbability} %</p>
+                        <p>조회된 데이터 : {statisticsData.stageStatResponse.length} 개</p>
+                    </div>
+
+                    {/* 초과 할당량 */}
+                    <div className="quota-card">
+                        <p>승리 시 최대 초과 할당량 : {overQuota.max} 개</p>
+                        <p>승리 시 최소 초과 할당량 : {overQuota.min} $</p>
+                        <p>승리 시 평균 초과 할당량 : {overQuota.avg} $</p>
+                        <p>승리 시 중간 초과 할당량 : {overQuota.median} $</p>
+                    </div>
+
+                    {/* 부족 할당량 */}
+                    <div className="quota-card">
+                        <p>실패 시 최대 부족 할당량 : {shortageQuota.max} 개</p>
+                        <p>실패 시 최소 부족 할당량 : {shortageQuota.min} $</p>
+                        <p>실패 시 평균 부족 할당량 : {shortageQuota.avg} $</p>
+                        <p>실패 시 중간 부족 할당량 : {shortageQuota.median} $</p>
+                    </div>
+                </div>
+
 
                 {statisticsData.stageStatResponse.length === 0 ? (
                     <p className="stat-empty">데이터가 없습니다</p>

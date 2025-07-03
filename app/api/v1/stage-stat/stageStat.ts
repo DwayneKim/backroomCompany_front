@@ -59,3 +59,14 @@ export const getAvgDeathStatistics = async (playerCount:number | null, difficult
     });
 };
 
+export const getQuotaStatistics = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null, stageType: string | null) => {
+    return baseClient.get(`/stat/quota`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType
+        }
+    });
+};
+
