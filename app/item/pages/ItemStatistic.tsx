@@ -5,10 +5,10 @@ import "../css/ItemPage.css"
 
 interface ItemDataResponse{
     buyingItemCount: number;
-    itemStatisticSummaryResponseData: ItemStatisticSummaryResponseData[]
+    detailItemStatisticSummaryResponseData: DetailItemStatisticSummaryResponseData[]
 }
 
-interface ItemStatisticSummaryResponseData{
+interface DetailItemStatisticSummaryResponseData{
     itemName: string;
     avg: number;
     max: number;
@@ -24,7 +24,7 @@ const ItemStatisticPage = () => {
     const [boughtTime, setBoughtTime] = useState<string | null>(null)
     const [itemData, setItemData] = useState<ItemDataResponse>({
         buyingItemCount: 0.00,
-        itemStatisticSummaryResponseData: [],
+        detailItemStatisticSummaryResponseData: [],
     });
 
     const getItemData = async (
@@ -97,12 +97,12 @@ const ItemStatisticPage = () => {
             </div>
 
             <div className="stat-list">
-                <p className="stat-empty">조회된 결과 : {itemData.itemStatisticSummaryResponseData.length} 개</p>
+                <p className="stat-empty">조회된 결과 : {itemData.detailItemStatisticSummaryResponseData.length} 개</p>
                 <p className="stat-empty">{boughtTime == 'BEFORE' ? '스테이지 진입 전' : '스테이지 진입 후'} 아이템 평균 구매 개수 : {itemData.buyingItemCount} 개</p>
-                {itemData.itemStatisticSummaryResponseData.length === 0 ? (
+                {itemData.detailItemStatisticSummaryResponseData.length === 0 ? (
                     <p className="stat-empty">데이터가 없습니다</p>
                 ) : (
-                    itemData.itemStatisticSummaryResponseData.map((item, index) => (
+                    itemData.detailItemStatisticSummaryResponseData.map((item, index) => (
                         <div key={index} className="stat-card">
                             <p><strong>아이템 이름:</strong> {item.itemName}</p>
                             <p><strong>평균 구매 개수 :</strong> {item.avg} 개</p>
