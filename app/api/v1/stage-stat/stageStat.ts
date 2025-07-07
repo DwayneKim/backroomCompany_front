@@ -92,3 +92,38 @@ export const getSuccessStatistics = async (playerCount:number | null, difficulty
     });
 };
 
+export const getCollectItem = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null, stageType: string | null) => {
+    return baseClient.get(`/stat/collect-item`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType
+        }
+    });
+};
+
+export const getSoldItem = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null, stageType: string | null) => {
+    return baseClient.get(`/stat/sold-item`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType
+        }
+    });
+};
+
+export const getStoryStagePlaytimeStatistics = async (playerCount:number | null, difficulty: string | null, stageIndex: number | null, stageType: string | null) => {
+    return baseClient.get(`/stat/story-stage`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType
+        }
+    });
+};
+
+
+

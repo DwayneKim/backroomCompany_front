@@ -1,6 +1,11 @@
 'use client'
 import React, { useEffect , useState } from "react";
-import {getPlaytimeStatistics, getQuotaStatistics, getSuccessStatistics} from "@/app/api/v1/stage-stat/stageStat";
+import {
+    getCollectItem,
+    getPlaytimeStatistics,
+    getQuotaStatistics, getSoldItem, getStoryStagePlaytimeStatistics,
+    getSuccessStatistics
+} from "@/app/api/v1/stage-stat/stageStat";
 import '../css/DashBoardPage.css'
 
 interface DetailResponse {
@@ -44,6 +49,37 @@ const DashBoardPage = () => {
         avg: 0.0,
         median: 0,
     })
+    const [successCollectItem, setSuccessCollectItem] = useState<DetailResponse>({
+        min: 0,
+        max: 0,
+        avg: 0.0,
+        median: 0,
+    })
+    const [successSoldItem, setSuccessSoldItem] = useState<DetailResponse>({
+        min: 0,
+        max: 0,
+        avg: 0.0,
+        median: 0,
+    })
+
+    const [failureCollectItem, setFailureCollectItem] = useState<DetailResponse>({
+        min: 0,
+        max: 0,
+        avg: 0.0,
+        median: 0,
+    })
+    const [failureSoldItem, setFailureSoldItem] = useState<DetailResponse>({
+        min: 0,
+        max: 0,
+        avg: 0.0,
+        median: 0,
+    })
+    const [storyStagePlaytimeStatistics, setStoryStagePlaytimeStatistics] = useState<DetailResponse>({
+        min: 0,
+        max: 0,
+        avg: 0.0,
+        median: 0,
+    })
 
     const getQuotaData = async (
         playerCount: number | null,
@@ -57,8 +93,11 @@ const DashBoardPage = () => {
             stageIndex,
             stageType,
         )
+
         setOverQuota(data.data.content.overQuota)
         setShortageQuota(data.data.content.shortageQuota)
+        console.log(data.data.content.overQuota)
+        console.log(data.data.content.shortageQuota)
     }
 
     const getSuccessStatisticsData = async (
@@ -75,6 +114,7 @@ const DashBoardPage = () => {
         )
 
         setSuccessStatistics(data.data.content)
+        console.log(data.data.content)
     }
 
     const getPlaytimeStatisticsData = async (
@@ -91,12 +131,68 @@ const DashBoardPage = () => {
         )
 
         setPlaytimeStatistic(data.data.content)
+        console.log(data.data.content)
+    }
+
+    const getCollectItemData = async (
+        playerCount: number | null,
+        difficulty: string | null,
+        stageIndex: number | null,
+        stageType: string | null
+    ) => {
+        const data = await getCollectItem(
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType,
+        )
+
+        setSuccessCollectItem(data.data.content.successCount)
+        setFailureCollectItem(data.data.content.failureCount)
+        console.log(data.data)
+    }
+
+    const getSoldItemData = async (
+        playerCount: number | null,
+        difficulty: string | null,
+        stageIndex: number | null,
+        stageType: string | null
+    ) => {
+        const data = await getSoldItem(
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType,
+        )
+
+        setSuccessSoldItem(data.data.content.successCount)
+        setFailureSoldItem(data.data.content.failureCount)
+        console.log(data.data)
+    }
+
+    const getStoryStagePlaytimeStatisticsData = async (
+        playerCount: number | null,
+        difficulty: string | null,
+        stageIndex: number | null,
+        stageType: string | null
+    ) => {
+        const data = await getStoryStagePlaytimeStatistics(
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType,
+        )
+
+        setStoryStagePlaytimeStatistics(data.data.content)
     }
 
     useEffect(() => {
         getQuotaData(playerCount, difficulty, stageIndex, stageType)
         getPlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType)
         getSuccessStatisticsData(playerCount, difficulty, stageIndex, stageType)
+        getCollectItemData(playerCount, difficulty, stageIndex, stageType)
+        getSoldItemData(playerCount, difficulty, stageIndex, stageType)
+        getStoryStagePlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType)
     },[playerCount, difficulty, quotaSuccess, stageIndex, stageType])
 
     return (
@@ -182,6 +278,62 @@ const DashBoardPage = () => {
                             <p>중간 플레이 시간 : {playtimeStatistic.median} 분</p>
                         </div>
                     </div>
+                    {/* 수집한 아이템 개수 */}
+                    <div className="quota-card">
+                        <h4>승리 시 수집한 아이템 개수 통계</h4>
+                        <p></p>
+                        <div className="quota-detail-card">
+                            <p>최대 아이템 개수 : {successCollectItem.max} 개</p>
+                            <p>최소 아이템 개수 : {successCollectItem.min} 개</p>
+                            <p>평균 아이템 개수 : {successCollectItem.avg} 개</p>
+                            <p>중간 아이템 개수 : {successCollectItem.median} 개</p>
+                        </div>
+                    </div>
+                    {/* 승리 시 판매한 아이템 개수 */}
+                    <div className="quota-card">
+                        <h4>승리 시 판매한 아이템 개수 통계</h4>
+                        <p></p>
+                        <div className="quota-detail-card">
+                            <p>최대 아이템 개수 : {successSoldItem.max} 개</p>
+                            <p>최소 아이템 개수 : {successSoldItem.min} 개</p>
+                            <p>평균 아이템 개수 : {successSoldItem.avg} 개</p>
+                            <p>중간 아이템 개수 : {successSoldItem.median} 개</p>
+                        </div>
+                    </div>
+                    {/* 수집한 아이템 개수 */}
+                    <div className="quota-card">
+                        <h4>패배 시 수집한 아이템 개수 통계</h4>
+                        <p></p>
+                        <div className="quota-detail-card">
+                            <p>최대 아이템 개수 : {failureCollectItem.max} 개</p>
+                            <p>최소 아이템 개수 : {failureCollectItem.min} 개</p>
+                            <p>평균 아이템 개수 : {failureCollectItem.avg} 개</p>
+                            <p>중간 아이템 개수 : {failureCollectItem.median} 개</p>
+                        </div>
+                    </div>
+                    {/* 패배 시 판매한 아이템 개수 */}
+                    <div className="quota-card">
+                        <h4>패배 시 판매한 아이템 개수 통계</h4>
+                        <p></p>
+                        <div className="quota-detail-card">
+                            <p>최대 아이템 개수 : {failureSoldItem.max} 개</p>
+                            <p>최소 아이템 개수 : {failureSoldItem.min} 개</p>
+                            <p>평균 아이템 개수 : {failureSoldItem.avg} 개</p>
+                            <p>중간 아이템 개수 : {failureSoldItem.median} 개</p>
+                        </div>
+                    </div>
+                    {/* 스토리 스테이지 별 플레이 시간 */}
+                    <div className="quota-card">
+                        <h4>스토리 스테이지 별 플레이 시간</h4>
+                        <p></p>
+                        <div className="quota-detail-card">
+                            <p>최대 플레이 시간 : {storyStagePlaytimeStatistics.max} 분</p>
+                            <p>최소 플레이 시간 : {storyStagePlaytimeStatistics.min} 분</p>
+                            <p>평균 플레이 시간 : {storyStagePlaytimeStatistics.avg} 분</p>
+                            <p>중간 플레이 시간 : {storyStagePlaytimeStatistics.median} 분</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
