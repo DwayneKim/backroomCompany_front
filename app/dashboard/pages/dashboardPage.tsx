@@ -96,8 +96,6 @@ const DashBoardPage = () => {
 
         setOverQuota(data.data.content.overQuota)
         setShortageQuota(data.data.content.shortageQuota)
-        console.log(data.data.content.overQuota)
-        console.log(data.data.content.shortageQuota)
     }
 
     const getSuccessStatisticsData = async (
@@ -114,7 +112,6 @@ const DashBoardPage = () => {
         )
 
         setSuccessStatistics(data.data.content)
-        console.log(data.data.content)
     }
 
     const getPlaytimeStatisticsData = async (
@@ -131,7 +128,6 @@ const DashBoardPage = () => {
         )
 
         setPlaytimeStatistic(data.data.content)
-        console.log(data.data.content)
     }
 
     const getCollectItemData = async (
@@ -149,7 +145,6 @@ const DashBoardPage = () => {
 
         setSuccessCollectItem(data.data.content.successCount)
         setFailureCollectItem(data.data.content.failureCount)
-        console.log(data.data)
     }
 
     const getSoldItemData = async (
@@ -167,7 +162,6 @@ const DashBoardPage = () => {
 
         setSuccessSoldItem(data.data.content.successCount)
         setFailureSoldItem(data.data.content.failureCount)
-        console.log(data.data)
     }
 
     const getStoryStagePlaytimeStatisticsData = async (
@@ -183,6 +177,7 @@ const DashBoardPage = () => {
             stageType,
         )
 
+        console.log(data.data.content)
         setStoryStagePlaytimeStatistics(data.data.content)
     }
 
