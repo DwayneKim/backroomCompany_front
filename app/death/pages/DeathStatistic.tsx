@@ -30,6 +30,7 @@ const DeathStatistic = () => {
         deathData : []
     })
     const [avgDeathStat, setAvgDeathStat] = useState<number | null>(0.00)
+    const [version, setVersion] = useState<number | null>(null)
 
     const getDeathStatisticsData = async (
         playerCount: number | null,
@@ -37,6 +38,7 @@ const DeathStatistic = () => {
         stageIndex: number | null,
         startTime: string | null,
         endTime: string | null,
+        version: number | null
     ) => {
         console.log("test")
         const data = await getDeathStatistics(
@@ -44,7 +46,8 @@ const DeathStatistic = () => {
             difficulty,
             stageIndex,
             startTime,
-            endTime
+            endTime,
+            version,
         )
         setDeathStatistics(data.data.content)
     }
@@ -53,21 +56,23 @@ const DeathStatistic = () => {
         playerCount: number | null,
         difficulty: string | null,
         stageIndex: number | null,
+        version: number | null
     ) => {
         console.log("test")
         const data = await getAvgDeathStatistics(
             playerCount,
             difficulty,
             stageIndex,
+            version,
         )
         console.log(data.data.content)
         setAvgDeathStat(data.data.content)
     }
 
     useEffect(() => {
-        getDeathStatisticsData(playerCount, difficulty, stageIndex, startTime, endTime)
-        getAvgDeathStatisticsData(playerCount, difficulty, stageIndex)
-    },[playerCount, difficulty, stageIndex, endTime, startTime])
+        getDeathStatisticsData(playerCount, difficulty, stageIndex, startTime, endTime, version)
+        getAvgDeathStatisticsData(playerCount, difficulty, stageIndex, version)
+    },[playerCount, difficulty, stageIndex, endTime, startTime, version])
 
     return (
         <div className="stat-container">
@@ -105,6 +110,14 @@ const DeathStatistic = () => {
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
+                </select>
+                <select
+                    value={version ?? ''}
+                    onChange={(e) => setVersion(e.target.value === 'NONE' ? null : Number(e.target.value))}
+                >
+                    <option value="NONE">버전 선택</option>
+                    <option value={-1}>베타 버전</option>
+                    <option value={20000}>정식 출시 버전</option>
                 </select>
             </div>
 

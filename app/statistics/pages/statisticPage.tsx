@@ -30,18 +30,21 @@ const StatisticPage = () => {
         successProbability : 0.0,
         stageStatResponse : []
     });
+    const [version, setVersion] = useState<number | null>(null)
 
     const getStatisticsData = async (
         playerCount: number | null,
         difficulty: string | null,
         isQuotaSuccess: boolean | null,
-        stageIndex: number | null
+        stageIndex: number | null,
+        version: number | null
     ) => {
         const data = await getStatistics(
             playerCount,
             difficulty,
             isQuotaSuccess,
-            stageIndex
+            stageIndex,
+            version
         )
 
         setStatisticsData(data.data.content)
@@ -49,8 +52,8 @@ const StatisticPage = () => {
     }
 
     useEffect(() => {
-        getStatisticsData(playerCount, difficulty, quotaSuccess, stageIndex)
-    },[playerCount, difficulty, quotaSuccess, stageIndex])
+        getStatisticsData(playerCount, difficulty, quotaSuccess, stageIndex,version)
+    },[playerCount, difficulty, quotaSuccess, stageIndex, version])
 
     return (
         <div className="stat-container">
@@ -87,6 +90,14 @@ const StatisticPage = () => {
                     {[0, 1, 2, 3].map(i => (
                         <option key={i} value={i}>{i}</option>
                     ))}
+                </select>
+                <select
+                    value={version ?? ''}
+                    onChange={(e) => setVersion(e.target.value === 'NONE' ? null : Number(e.target.value))}
+                >
+                    <option value="NONE">버전 선택</option>
+                    <option value={-1}>베타 버전</option>
+                    <option value={20000}>정식 출시 버전</option>
                 </select>
             </div>
 

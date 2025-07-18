@@ -27,6 +27,7 @@ const DashBoardPage = () => {
     const [quotaSuccess, setQuotaSuccess] = useState<boolean | null>(null)
     const [stageIndex, setStageIndex] = useState<number | null>(null)
     const [stageType, setStageType] = useState<string | null>(null)
+    const [version, setVersion] = useState<number | null>(null)
     const [playtimeStatistic, setPlaytimeStatistic] = useState<DetailResponse>({
         min: 0,
         max: 0,
@@ -86,12 +87,14 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
+        version: number | null
     ) => {
         const data = await getQuotaStatistics(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
+            version,
         )
 
         setOverQuota(data.data.content.overQuota)
@@ -102,13 +105,15 @@ const DashBoardPage = () => {
         playerCount: number | null,
         difficulty: string | null,
         stageIndex: number | null,
-        stageType: string | null
+        stageType: string | null,
+        version: number | null
     ) => {
         const data = await getSuccessStatistics(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
+            version,
         )
 
         setSuccessStatistics(data.data.content)
@@ -118,13 +123,15 @@ const DashBoardPage = () => {
         playerCount: number | null,
         difficulty: string | null,
         stageIndex: number | null,
-        stageType: string | null
+        stageType: string | null,
+        version: number | null
     ) => {
         const data = await getPlaytimeStatistics(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
+            version
         )
 
         setPlaytimeStatistic(data.data.content)
@@ -134,13 +141,15 @@ const DashBoardPage = () => {
         playerCount: number | null,
         difficulty: string | null,
         stageIndex: number | null,
-        stageType: string | null
+        stageType: string | null,
+        version: number | null
     ) => {
         const data = await getCollectItem(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
+            version,
         )
 
         setSuccessCollectItem(data.data.content.successCount)
@@ -151,13 +160,15 @@ const DashBoardPage = () => {
         playerCount: number | null,
         difficulty: string | null,
         stageIndex: number | null,
-        stageType: string | null
+        stageType: string | null,
+        version: number | null
     ) => {
         const data = await getSoldItem(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
+            version,
         )
 
         setSuccessSoldItem(data.data.content.successCount)
@@ -168,13 +179,15 @@ const DashBoardPage = () => {
         playerCount: number | null,
         difficulty: string | null,
         stageIndex: number | null,
-        stageType: string | null
+        stageType: string | null,
+        version: number | null
     ) => {
         const data = await getStoryStagePlaytimeStatistics(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
+            version
         )
 
         console.log(data.data.content)
@@ -182,13 +195,13 @@ const DashBoardPage = () => {
     }
 
     useEffect(() => {
-        getQuotaData(playerCount, difficulty, stageIndex, stageType)
-        getPlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType)
-        getSuccessStatisticsData(playerCount, difficulty, stageIndex, stageType)
-        getCollectItemData(playerCount, difficulty, stageIndex, stageType)
-        getSoldItemData(playerCount, difficulty, stageIndex, stageType)
-        getStoryStagePlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType)
-    },[playerCount, difficulty, quotaSuccess, stageIndex, stageType])
+        getQuotaData(playerCount, difficulty, stageIndex, stageType, version)
+        getPlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, version)
+        getSuccessStatisticsData(playerCount, difficulty, stageIndex, stageType, version)
+        getCollectItemData(playerCount, difficulty, stageIndex, stageType, version)
+        getSoldItemData(playerCount, difficulty, stageIndex, stageType, version)
+        getStoryStagePlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, version)
+    },[playerCount, difficulty, quotaSuccess, stageIndex, stageType, version])
 
     return (
         <div className="stat-container">
@@ -225,6 +238,14 @@ const DashBoardPage = () => {
                     {[0, 1, 2, 3].map(i => (
                         <option key={i} value={i}>{i}</option>
                     ))}
+                </select>
+                <select
+                    value={version ?? ''}
+                    onChange={(e) => setVersion(e.target.value === 'NONE' ? null : Number(e.target.value))}
+                >
+                    <option value="NONE">버전 선택</option>
+                    <option value={-1}>베타 버전</option>
+                    <option value={20000}>정식 출시 버전</option>
                 </select>
             </div>
 

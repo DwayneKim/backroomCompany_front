@@ -22,6 +22,7 @@ const ItemStatisticPage = () => {
     const [difficulty, setDifficulty] = useState<string | null>(null)
     const [stageIndex, setStageIndex] = useState<number | null>(null)
     const [boughtTime, setBoughtTime] = useState<string | null>(null)
+    const [version, setVersion] = useState<number | null>(null)
     const [itemData, setItemData] = useState<ItemDataResponse>({
         buyingItemCount: 0.00,
         detailItemStatisticSummaryResponseData: [],
@@ -32,21 +33,23 @@ const ItemStatisticPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         boughtTime: string | null,
+        version: number | null
     ) => {
         console.log("test")
         const data = await getItemBeforeStatistics(
             playerCount,
             difficulty,
             stageIndex,
-            boughtTime
+            boughtTime,
+            version,
         )
         console.log(data)
         setItemData(data.data.content)
     }
 
     useEffect(() => {
-        getItemData(playerCount, difficulty, stageIndex, boughtTime)
-    },[playerCount, difficulty, stageIndex, boughtTime])
+        getItemData(playerCount, difficulty, stageIndex, boughtTime, version)
+    },[playerCount, difficulty, stageIndex, boughtTime, version])
 
     return (
         <div className="stat-container">
@@ -93,6 +96,14 @@ const ItemStatisticPage = () => {
                     <option value="">아이템 통계</option>
                     <option value="BEFORE">스테이지 진입 전</option>
                     <option value="AFTER">스테이지 진입 후</option>
+                </select>
+                <select
+                    value={version ?? ''}
+                    onChange={(e) => setVersion(e.target.value === 'NONE' ? null : Number(e.target.value))}
+                >
+                    <option value="NONE">버전 선택</option>
+                    <option value={-1}>베타 버전</option>
+                    <option value={20000}>정식 출시 버전</option>
                 </select>
             </div>
 
