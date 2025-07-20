@@ -12,13 +12,21 @@ export function middleware(request: NextRequest) {
         return NextResponse.next()
     }
 
-    //2. 로컬은 무조건 허용
+    // 2. 로컬은 무조건 허용
     if (isLocal) {
         return NextResponse.next()
     }
 
     // 3. 로그인되어 있으면 IP 무시하고 허용
     if (token) {
+        return NextResponse.next()
+    }
+
+    if (
+        pathname.startsWith('/_next') || // 정적 파일
+        pathname.startsWith('/api') ||   // API 요청
+        pathname === '/favicon.ico'
+    ) {
         return NextResponse.next()
     }
 
@@ -29,7 +37,8 @@ export function middleware(request: NextRequest) {
     const isAllowed = ALLOWED_IPS.includes(clientIp)
 
     if (!isAllowed) {
-        return new NextResponse('접근 권한이 없습니다', { status: 403 })
+        const loginUrl = new URL('/login', request.url)
+        return NextResponse.redirect(loginUrl)
     }
 
     return NextResponse.next()
