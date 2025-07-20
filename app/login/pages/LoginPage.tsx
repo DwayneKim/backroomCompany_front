@@ -1,54 +1,55 @@
-'use client'
-import {useState} from "react";
-import {router} from "next/client";
-import {login} from "@/app/api/v1/login/login";
+'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { login } from '@/app/api/v1/login/login';
+import '../css/LoginPage.css';
 
-const LoginPage = () => {
-
-    const [password, setPassword] = useState('')
-    const [id, setId] = useState('')
+export default function LoginPage() {
+    const [id, setId] = useState('');
+    const [password, setPassword] = useState('');
+    const router = useRouter();
 
     const handleLogin = async () => {
-        console.log(id)
-        console.log(password)
-        try {
-            const data = await login(id, password);
-
-            // 쿠키 저장 (키-값 형태로)
-            document.cookie = `access_token=${data.data.content.accessToken}; path=/`;
-
-            // 메인 페이지 이동
-            router.push('/');
-        } catch (e) {
-            console.error('로그인 실패', e);
-            alert('로그인 실패');
+        if (!id || !password) {
+            alert('아이디와 비밀번호를 입력하세요.');
+            return;
         }
-    }
 
+        try {
+            const response = await login(id, password);
+            const { accessToken } = response.data.content;
+
+            document.cookie = `access_token=${accessToken}; path=/`;
+            router.push('/');
+        } catch (error) {
+            console.error('로그인 실패:', error);
+            alert('로그인 실패. 다시 시도해주세요.');
+        }
+    };
 
     return (
-        <div>
-            <main>
-                <div style={{ padding: 20 }}>
-                    <h1>로그인</h1>
-                    <input
-                        type="id"
-                        placeholder="아이디 입력"
-                        value={id}
-                        onChange={(e) => setId(e.target.value)}
-                    />
-                    <input
-                        type="password"
-                        placeholder="비밀번호 입력"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button onClick={handleLogin}>로그인</button>
-                </div>
-            </main>
+        <div className="login-container">
+            <div className="login-card">
+                <h1 className="login-title">로그인</h1>
+                <input
+                    type="text"
+                    placeholder="아이디 입력"
+                    value={id}
+                    onChange={(e) => setId(e.target.value)}
+                    className="login-input"
+                />
+                <input
+                    type="password"
+                    placeholder="비밀번호 입력"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="login-input"
+                />
+                <button onClick={handleLogin} className="login-button">
+                    로그인
+                </button>
+            </div>
         </div>
     );
 }
-
-export default LoginPage;
