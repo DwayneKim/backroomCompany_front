@@ -13,9 +13,9 @@ export function middleware(request: NextRequest) {
     }
 
     // 2. 로컬은 무조건 허용
-    // if (isLocal) {
-    //     return NextResponse.next()
-    // }
+    if (isLocal) {
+        return NextResponse.next()
+    }
 
     // 3. 로그인되어 있으면 IP 무시하고 허용
     if (token) {
