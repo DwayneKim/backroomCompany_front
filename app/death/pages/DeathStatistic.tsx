@@ -31,6 +31,9 @@ const DeathStatistic = () => {
     })
     const [avgDeathStat, setAvgDeathStat] = useState<number | null>(0.00)
     const [version, setVersion] = useState<number | null>(null)
+    const [startYear, setStartYear] = useState("");
+    const [startMonth, setStartMonth] = useState("");
+    const [startDay, setStartDay] = useState("");
 
     const getDeathStatisticsData = async (
         playerCount: number | null,
@@ -121,6 +124,13 @@ const DeathStatistic = () => {
                     <option value={-1}>베타 버전</option>
                     <option value={20000}>정식 출시 버전</option>
                 </select>
+                    <select value={startYear}
+                            onChange={(e) => setStartYear(e.target.value)}>
+                        <option value="">년</option>
+                        {["2025"].map((y) => (
+                            <option key={y} value={y}>{y}</option>
+                        ))}
+                    </select>
             </div>
 
             <div className="death-statistics-wrapper">

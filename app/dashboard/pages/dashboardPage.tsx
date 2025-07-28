@@ -7,6 +7,8 @@ import {
     getSuccessStatistics
 } from "@/app/api/v1/stage-stat/stageStat";
 import '../css/DashBoardPage.css'
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 
 interface DetailResponse {
     min: number;
@@ -28,6 +30,8 @@ const DashBoardPage = () => {
     const [stageIndex, setStageIndex] = useState<number | null>(null)
     const [stageType, setStageType] = useState<string | null>(null)
     const [version, setVersion] = useState<number | null>(null)
+    const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
+    const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
     const [playtimeStatistic, setPlaytimeStatistic] = useState<DetailResponse>({
         min: 0,
         max: 0,
@@ -87,14 +91,22 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null
+        version: number | null,
+        startTime: Date | null,
+        endTime: Date | null,
     ) => {
+
+        const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
+        const endIsoString = endTime ? endTime.toISOString().split("Z")[0] : null;
+
         const data = await getQuotaStatistics(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
             version,
+            startIsoString,
+            endIsoString,
         )
 
         setOverQuota(data.data.content.overQuota)
@@ -106,14 +118,22 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null
+        version: number | null,
+        startTime: Date | null,
+        endTime: Date | null,
     ) => {
+
+        const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
+        const endIsoString = endTime ? endTime.toISOString().split("Z")[0] : null;
+
         const data = await getSuccessStatistics(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
             version,
+            startIsoString,
+            endIsoString,
         )
 
         setSuccessStatistics(data.data.content)
@@ -124,14 +144,22 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null
+        version: number | null,
+        startTime: Date | null,
+        endTime: Date | null,
     ) => {
+
+        const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
+        const endIsoString = endTime ? endTime.toISOString().split("Z")[0] : null;
+
         const data = await getPlaytimeStatistics(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
-            version
+            version,
+            startIsoString,
+            endIsoString,
         )
 
         setPlaytimeStatistic(data.data.content)
@@ -142,14 +170,22 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null
+        version: number | null,
+        startTime: Date | null,
+        endTime: Date | null,
     ) => {
+
+        const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
+        const endIsoString = endTime ? endTime.toISOString().split("Z")[0] : null;
+
         const data = await getCollectItem(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
             version,
+            startIsoString,
+            endIsoString,
         )
 
         setSuccessCollectItem(data.data.content.successCount)
@@ -161,14 +197,22 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null
+        version: number | null,
+        startTime: Date | null,
+        endTime: Date | null,
     ) => {
+
+        const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
+        const endIsoString = endTime ? endTime.toISOString().split("Z")[0] : null;
+
         const data = await getSoldItem(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
             version,
+            startIsoString,
+            endIsoString,
         )
 
         setSuccessSoldItem(data.data.content.successCount)
@@ -180,14 +224,21 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null
+        version: number | null,
+        startTime: Date | null,
+        endTime: Date | null,
     ) => {
+        const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
+        const endIsoString = endTime ? endTime.toISOString().split("Z")[0] : null;
+
         const data = await getStoryStagePlaytimeStatistics(
             playerCount,
             difficulty,
             stageIndex,
             stageType,
-            version
+            version,
+            startIsoString,
+            endIsoString,
         )
 
         console.log(data.data.content)
@@ -195,13 +246,13 @@ const DashBoardPage = () => {
     }
 
     useEffect(() => {
-        getQuotaData(playerCount, difficulty, stageIndex, stageType, version)
-        getPlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, version)
-        getSuccessStatisticsData(playerCount, difficulty, stageIndex, stageType, version)
-        getCollectItemData(playerCount, difficulty, stageIndex, stageType, version)
-        getSoldItemData(playerCount, difficulty, stageIndex, stageType, version)
-        getStoryStagePlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, version)
-    },[playerCount, difficulty, quotaSuccess, stageIndex, stageType, version])
+        getQuotaData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
+        getPlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
+        getSuccessStatisticsData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
+        getCollectItemData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
+        getSoldItemData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
+        getStoryStagePlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
+    },[playerCount, difficulty, quotaSuccess, stageIndex, stageType, version, selectedStartDate, selectedEndDate])
 
     return (
         <div className="stat-container">
@@ -247,6 +298,27 @@ const DashBoardPage = () => {
                     <option value={-1}>베타 버전</option>
                     <option value={20000}>정식 출시 버전</option>
                 </select>
+            </div>
+            <div className="date-range-container">
+                <div className="date-picker-wrapper">
+                    <DatePicker
+                        selected={selectedStartDate}
+                        onChange={(date) => setSelectedStartDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="날짜 선택"
+                        className="custom-datepicker"
+                    />
+                </div>
+                <h3 className="separator">~</h3>
+                <div className="date-picker-wrapper">
+                    <DatePicker
+                        selected={selectedEndDate}
+                        onChange={(date) => setSelectedEndDate(date)}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="날짜 선택"
+                        className="custom-datepicker"
+                    />
+                </div>
             </div>
 
             <div className="stat-list">
