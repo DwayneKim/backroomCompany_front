@@ -100,7 +100,9 @@ export const getQuotaStatistics = async (
     difficulty: string | null,
     stageIndex: number | null,
     stageType: string | null,
-    version: number | null
+    version: number | null,
+    startTime: string | null,
+    endTime: string | null,
 ) => {
     return baseClient.get(`/stat/quota`, {
         params: {
@@ -109,6 +111,8 @@ export const getQuotaStatistics = async (
             stageIndex,
             stageType,
             version,
+            startTime,
+            endTime,
         }
     });
 };
@@ -118,7 +122,9 @@ export const getPlaytimeStatistics = async (
     difficulty: string | null,
     stageIndex: number | null,
     stageType: string | null,
-    version: number | null
+    version: number | null,
+    startTime: string | null,
+    endTime: string | null,
 ) => {
     return baseClient.get(`/stat/play-time`, {
         params: {
@@ -127,6 +133,8 @@ export const getPlaytimeStatistics = async (
             stageIndex,
             stageType,
             version,
+            startTime,
+            endTime,
         }
     });
 };
@@ -136,7 +144,9 @@ export const getSuccessStatistics = async (
     difficulty: string | null,
     stageIndex: number | null,
     stageType: string | null,
-    version: number | null
+    version: number | null,
+    startTime: string | null,
+    endTime: string | null,
 ) => {
     return baseClient.get(`/stat/success-statistics`, {
         params: {
@@ -145,6 +155,8 @@ export const getSuccessStatistics = async (
             stageIndex,
             stageType,
             version,
+            startTime,
+            endTime,
         }
     });
 };
@@ -154,7 +166,9 @@ export const getCollectItem = async (
     difficulty: string | null,
     stageIndex: number | null,
     stageType: string | null,
-    version: number | null
+    version: number | null,
+    startTime: string | null,
+    endTime: string | null,
 ) => {
     return baseClient.get(`/stat/collect-item`, {
         params: {
@@ -163,6 +177,8 @@ export const getCollectItem = async (
             stageIndex,
             stageType,
             version,
+            startTime,
+            endTime,
         }
     });
 };
@@ -172,7 +188,9 @@ export const getSoldItem = async (
     difficulty: string | null,
     stageIndex: number | null,
     stageType: string | null,
-    version: number | null
+    version: number | null,
+    startTime: string | null,
+    endTime: string | null,
 ) => {
     return baseClient.get(`/stat/sold-item`, {
         params: {
@@ -181,6 +199,8 @@ export const getSoldItem = async (
             stageIndex,
             stageType,
             version,
+            startTime,
+            endTime,
         }
     });
 };
@@ -190,7 +210,9 @@ export const getStoryStagePlaytimeStatistics = async (
     difficulty: string | null,
     stageIndex: number | null,
     stageType: string | null,
-    version: number | null
+    version: number | null,
+    startTime: string | null,
+    endTime: string | null,
 ) => {
     return baseClient.get(`/stat/story-stage`, {
         params: {
@@ -199,6 +221,8 @@ export const getStoryStagePlaytimeStatistics = async (
             stageIndex,
             stageType,
             version,
+            startTime,
+            endTime,
         }
     });
 };
