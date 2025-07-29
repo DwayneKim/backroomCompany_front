@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const ALLOWED_IPS = ['121.165.94.37']
+const ALLOWED_IPS = ['121.165.94.37', '72.14.201.174']
 
 export function middleware(request: NextRequest) {
     const pathname = request.nextUrl.pathname
