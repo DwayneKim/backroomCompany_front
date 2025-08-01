@@ -24,13 +24,15 @@ const DeathStatistic = () => {
     const [stageIndex, setStageIndex] = useState<number | null>(null)
     const [startTime, setStartTime] = useState<string | null>(null)
     const [endTime, setEndTime] = useState<string | null>(null)
+    const [version, setVersion] = useState<number | null>(null)
+    const [minorVersion, setMinorVersion] = useState<number | null>(null)
+    const [isLast, setIsLast] = useState<boolean | null>(null);
     const [deathStatistics, setDeathStatistics] = useState<DeathStatistics>({
         difficulty : 'NONE',
         stageIndex : -1,
         deathData : []
     })
     const [avgDeathStat, setAvgDeathStat] = useState<number | null>(0.00)
-    const [version, setVersion] = useState<number | null>(null)
     const [startYear, setStartYear] = useState("");
     const [startMonth, setStartMonth] = useState("");
     const [startDay, setStartDay] = useState("");
@@ -41,7 +43,9 @@ const DeathStatistic = () => {
         stageIndex: number | null,
         startTime: string | null,
         endTime: string | null,
-        version: number | null
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null
     ) => {
         console.log("test")
         const data = await getDeathStatistics(
@@ -50,7 +54,9 @@ const DeathStatistic = () => {
             stageIndex,
             startTime,
             endTime,
-            version,
+            majorVersion,
+            minorVersion,
+            isLast,
         )
         setDeathStatistics(data.data.content)
     }
@@ -59,23 +65,27 @@ const DeathStatistic = () => {
         playerCount: number | null,
         difficulty: string | null,
         stageIndex: number | null,
-        version: number | null
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null
     ) => {
         console.log("test")
         const data = await getAvgDeathStatistics(
             playerCount,
             difficulty,
             stageIndex,
-            version,
+            majorVersion,
+            minorVersion,
+            isLast,
         )
         console.log(data.data.content)
         setAvgDeathStat(data.data.content)
     }
 
     useEffect(() => {
-        getDeathStatisticsData(playerCount, difficulty, stageIndex, startTime, endTime, version)
-        getAvgDeathStatisticsData(playerCount, difficulty, stageIndex, version)
-    },[playerCount, difficulty, stageIndex, endTime, startTime, version])
+        getDeathStatisticsData(playerCount, difficulty, stageIndex, startTime, endTime, version, minorVersion, isLast)
+        getAvgDeathStatisticsData(playerCount, difficulty, stageIndex, version, minorVersion, isLast)
+    },[playerCount, difficulty, stageIndex, endTime, startTime, version, minorVersion, isLast])
 
     return (
         <div className="stat-container">
