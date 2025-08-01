@@ -31,20 +31,26 @@ const StatisticPage = () => {
         stageStatResponse : []
     });
     const [version, setVersion] = useState<number | null>(null)
+    const [minorVersion, setMinorVersion] = useState<number | null>(null)
+    const [isLast, setIsLast] = useState<boolean | null>(null);
 
     const getStatisticsData = async (
         playerCount: number | null,
         difficulty: string | null,
         isQuotaSuccess: boolean | null,
         stageIndex: number | null,
-        version: number | null
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null,
     ) => {
         const data = await getStatistics(
             playerCount,
             difficulty,
             isQuotaSuccess,
             stageIndex,
-            version
+            majorVersion,
+            minorVersion,
+            isLast
         )
 
         setStatisticsData(data.data.content)
@@ -52,8 +58,8 @@ const StatisticPage = () => {
     }
 
     useEffect(() => {
-        getStatisticsData(playerCount, difficulty, quotaSuccess, stageIndex,version)
-    },[playerCount, difficulty, quotaSuccess, stageIndex, version])
+        getStatisticsData(playerCount, difficulty, quotaSuccess, stageIndex,version, minorVersion, isLast)
+    },[playerCount, difficulty, quotaSuccess, stageIndex, version, minorVersion, isLast])
 
     return (
         <div className="stat-container">
