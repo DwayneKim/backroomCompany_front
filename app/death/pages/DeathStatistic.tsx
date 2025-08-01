@@ -33,7 +33,6 @@ const DeathStatistic = () => {
         deathData : []
     })
     const [avgDeathStat, setAvgDeathStat] = useState<number | null>(0.00)
-    const [version, setVersion] = useState<number | null>(null)
     const [startYear, setStartYear] = useState("");
     const [startMonth, setStartMonth] = useState("");
     const [startDay, setStartDay] = useState("");
