@@ -30,8 +30,10 @@ const DashBoardPage = () => {
     const [stageIndex, setStageIndex] = useState<number | null>(null)
     const [stageType, setStageType] = useState<string | null>(null)
     const [version, setVersion] = useState<number | null>(null)
+    const [minorVersion, setMinorVersion] = useState<number | null>(null)
     const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
     const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+    const [isLast, setIsLast] = useState<boolean | null>(null);
     const [playtimeStatistic, setPlaytimeStatistic] = useState<DetailResponse>({
         min: 0,
         max: 0,
@@ -91,9 +93,11 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null,
         startTime: Date | null,
         endTime: Date | null,
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null,
     ) => {
 
         const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
@@ -104,9 +108,11 @@ const DashBoardPage = () => {
             difficulty,
             stageIndex,
             stageType,
-            version,
             startIsoString,
             endIsoString,
+            majorVersion,
+            minorVersion,
+            isLast,
         )
 
         setOverQuota(data.data.content.overQuota)
@@ -118,9 +124,11 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null,
         startTime: Date | null,
         endTime: Date | null,
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null,
     ) => {
 
         const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
@@ -131,9 +139,11 @@ const DashBoardPage = () => {
             difficulty,
             stageIndex,
             stageType,
-            version,
             startIsoString,
             endIsoString,
+            majorVersion,
+            minorVersion,
+            isLast,
         )
 
         setSuccessStatistics(data.data.content)
@@ -144,9 +154,11 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null,
         startTime: Date | null,
         endTime: Date | null,
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null,
     ) => {
 
         const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
@@ -157,9 +169,11 @@ const DashBoardPage = () => {
             difficulty,
             stageIndex,
             stageType,
-            version,
             startIsoString,
             endIsoString,
+            majorVersion,
+            minorVersion,
+            isLast,
         )
 
         setPlaytimeStatistic(data.data.content)
@@ -170,9 +184,11 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null,
         startTime: Date | null,
         endTime: Date | null,
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null,
     ) => {
 
         const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
@@ -183,9 +199,11 @@ const DashBoardPage = () => {
             difficulty,
             stageIndex,
             stageType,
-            version,
             startIsoString,
             endIsoString,
+            majorVersion,
+            minorVersion,
+            isLast,
         )
 
         setSuccessCollectItem(data.data.content.successCount)
@@ -197,9 +215,11 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null,
         startTime: Date | null,
         endTime: Date | null,
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null,
     ) => {
 
         const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
@@ -210,9 +230,11 @@ const DashBoardPage = () => {
             difficulty,
             stageIndex,
             stageType,
-            version,
             startIsoString,
             endIsoString,
+            majorVersion,
+            minorVersion,
+            isLast,
         )
 
         setSuccessSoldItem(data.data.content.successCount)
@@ -224,9 +246,11 @@ const DashBoardPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         stageType: string | null,
-        version: number | null,
         startTime: Date | null,
         endTime: Date | null,
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null,
     ) => {
         const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
         const endIsoString = endTime ? endTime.toISOString().split("Z")[0] : null;
@@ -236,9 +260,11 @@ const DashBoardPage = () => {
             difficulty,
             stageIndex,
             stageType,
-            version,
             startIsoString,
             endIsoString,
+            majorVersion,
+            minorVersion,
+            isLast,
         )
 
         console.log(data.data.content)
@@ -246,13 +272,13 @@ const DashBoardPage = () => {
     }
 
     useEffect(() => {
-        getQuotaData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
-        getPlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
-        getSuccessStatisticsData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
-        getCollectItemData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
-        getSoldItemData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
-        getStoryStagePlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, version, selectedStartDate, selectedEndDate)
-    },[playerCount, difficulty, quotaSuccess, stageIndex, stageType, version, selectedStartDate, selectedEndDate])
+        getQuotaData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate, version, minorVersion, isLast)
+        getPlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate, version, minorVersion, isLast)
+        getSuccessStatisticsData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate, version, minorVersion, isLast)
+        getCollectItemData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate, version, minorVersion, isLast)
+        getSoldItemData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate, version, minorVersion, isLast)
+        getStoryStagePlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate,version, minorVersion, isLast)
+    },[playerCount, difficulty, quotaSuccess, stageIndex, stageType, selectedStartDate, selectedEndDate, version, minorVersion, isLast])
 
     return (
         <div className="stat-container">
@@ -305,6 +331,44 @@ const DashBoardPage = () => {
                     <option value={206}>Ver. 206</option>
                     <option value={207}>Ver. 207</option>
                     <option value={208}>Ver. 208</option>
+                </select>
+                <input
+                    type="number"
+                    value={minorVersion ?? ''} // null 또는 숫자 → 항상 controlled
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '') {
+                            setMinorVersion(null);
+                        } else if (value.length <= 3) {
+                            setMinorVersion(Number(value));
+                        }
+                    }}
+                    placeholder="마이너"
+                    min={0}
+                    max={999}
+                />
+                <select
+                    value={
+                        isLast === null
+                            ? ''
+                            : isLast === true
+                                ? 'true'
+                                : 'false'
+                    }
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '') {
+                            setIsLast(null);
+                        } else if (value === 'true') {
+                            setIsLast(true);
+                        } else {
+                            setIsLast(false);
+                        }
+                    }}
+                >
+                    <option value="">전체 조회</option>
+                    <option value="true">마이너 버전 부터 조회</option>
+                    <option value="false">마이너 버전 까지 조회</option>
                 </select>
             </div>
             <div className="date-range-container">
