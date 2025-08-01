@@ -312,7 +312,7 @@ const DashBoardPage = () => {
                     onChange={(e) => setStageIndex(e.target.value === '' ? null : Number(e.target.value))}
                 >
                     <option value="">스테이지</option>
-                    {[0, 1, 2, 3, 4, 5].map(i => (
+                    {[0, 1, 2, 3, 4, 5,6].map(i => (
                         <option key={i} value={i}>{i}</option>
                     ))}
                 </select>
