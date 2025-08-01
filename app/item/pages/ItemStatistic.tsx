@@ -23,6 +23,8 @@ const ItemStatisticPage = () => {
     const [stageIndex, setStageIndex] = useState<number | null>(null)
     const [boughtTime, setBoughtTime] = useState<string | null>(null)
     const [version, setVersion] = useState<number | null>(null)
+    const [minorVersion, setMinorVersion] = useState<number | null>(null)
+    const [isLast, setIsLast] = useState<boolean | null>(null);
     const [itemData, setItemData] = useState<ItemDataResponse>({
         buyingItemCount: 0.00,
         detailItemStatisticSummaryResponseData: [],
@@ -33,7 +35,9 @@ const ItemStatisticPage = () => {
         difficulty: string | null,
         stageIndex: number | null,
         boughtTime: string | null,
-        version: number | null
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null,
     ) => {
         console.log("test")
         const data = await getItemBeforeStatistics(
@@ -41,15 +45,17 @@ const ItemStatisticPage = () => {
             difficulty,
             stageIndex,
             boughtTime,
-            version,
+            majorVersion,
+            minorVersion,
+            isLast,
         )
         console.log(data)
         setItemData(data.data.content)
     }
 
     useEffect(() => {
-        getItemData(playerCount, difficulty, stageIndex, boughtTime, version)
-    },[playerCount, difficulty, stageIndex, boughtTime, version])
+        getItemData(playerCount, difficulty, stageIndex, boughtTime, version, minorVersion, isLast)
+    },[playerCount, difficulty, stageIndex, boughtTime, version, minorVersion, isLast])
 
     return (
         <div className="stat-container">
