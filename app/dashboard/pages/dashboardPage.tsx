@@ -296,7 +296,15 @@ const DashBoardPage = () => {
                 >
                     <option value="NONE">버전 선택</option>
                     <option value={-1}>베타 버전</option>
-                    <option value={20000}>정식 출시 버전</option>
+                    <option value={200}>Ver. 200</option>
+                    <option value={201}>Ver. 201</option>
+                    <option value={202}>Ver. 202</option>
+                    <option value={203}>Ver. 203</option>
+                    <option value={204}>Ver. 204</option>
+                    <option value={205}>Ver. 205</option>
+                    <option value={206}>Ver. 206</option>
+                    <option value={207}>Ver. 207</option>
+                    <option value={208}>Ver. 208</option>
                 </select>
             </div>
             <div className="date-range-container">
