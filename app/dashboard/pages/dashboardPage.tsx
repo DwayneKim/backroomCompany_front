@@ -68,7 +68,6 @@ const DashBoardPage = () => {
         avg: 0.0,
         median: 0,
     })
-
     const [failureCollectItem, setFailureCollectItem] = useState<DetailResponse>({
         min: 0,
         max: 0,

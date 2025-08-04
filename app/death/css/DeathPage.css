@@ -62,3 +62,36 @@
 .death-statistics-card:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
+
+.date-range-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+}
+
+.date-picker-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.date-picker-wrapper label {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+}
+
+.custom-datepicker {
+    width: 150px;
+    padding: 8px 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.custom-datepicker:focus {
+    border-color: #007bff;
+}
