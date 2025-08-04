@@ -7,7 +7,7 @@ import DatePicker from "react-datepicker";
 
 interface DeathData {
     description: string
-    average: number
+    avg: number
     max: number
     min: number
     median: number
