@@ -2,6 +2,8 @@
 import React, { useEffect , useState } from "react";
 import {getItemBeforeStatistics} from "@/app/api/v1/stage-stat/stageStat";
 import "../css/ItemPage.css"
+import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from "react-datepicker";
 
 interface ItemDataResponse{
     buyingItemCount: number;
@@ -29,21 +31,33 @@ const ItemStatisticPage = () => {
         buyingItemCount: 0.00,
         detailItemStatisticSummaryResponseData: [],
     });
+    const [startTime, setStartTime] = useState<Date | null>(null)
+    const [endTime, setEndTime] = useState<Date | null>(null)
+    const [stageType, setStageType] = useState<string | null>(null)
+
 
     const getItemData = async (
         playerCount: number | null,
         difficulty: string | null,
         stageIndex: number | null,
+        stageType: string | null,
+        startTime: Date | null,
+        endTime: Date | null,
         boughtTime: string | null,
         majorVersion: number | null,
         minorVersion: number | null,
         isLast: boolean | null,
     ) => {
+        const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
+        const endIsoString = endTime ? endTime.toISOString().split("Z")[0] : null;
         console.log("test")
         const data = await getItemBeforeStatistics(
             playerCount,
             difficulty,
             stageIndex,
+            stageType,
+            startIsoString,
+            endIsoString,
             boughtTime,
             majorVersion,
             minorVersion,
@@ -54,8 +68,8 @@ const ItemStatisticPage = () => {
     }
 
     useEffect(() => {
-        getItemData(playerCount, difficulty, stageIndex, boughtTime, version, minorVersion, isLast)
-    },[playerCount, difficulty, stageIndex, boughtTime, version, minorVersion, isLast])
+        getItemData(playerCount, difficulty, stageIndex, stageType, startTime, endTime, boughtTime, version, minorVersion, isLast)
+    },[playerCount, difficulty, stageIndex,stageType, startTime, endTime, boughtTime, version, minorVersion, isLast])
 
     return (
         <div className="stat-container">
@@ -96,6 +110,7 @@ const ItemStatisticPage = () => {
                     <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
+                    <option value="6">6</option>
                 </select>
                 <select
                     value={boughtTime ?? ""}
@@ -111,10 +126,76 @@ const ItemStatisticPage = () => {
                 >
                     <option value="NONE">버전 선택</option>
                     <option value={-1}>베타 버전</option>
-                    <option value={20000}>정식 출시 버전</option>
+                    <option value={200}>Ver. 200</option>
+                    <option value={201}>Ver. 201</option>
+                    <option value={202}>Ver. 202</option>
+                    <option value={203}>Ver. 203</option>
+                    <option value={204}>Ver. 204</option>
+                    <option value={205}>Ver. 205</option>
+                    <option value={206}>Ver. 206</option>
+                    <option value={207}>Ver. 207</option>
+                    <option value={208}>Ver. 208</option>
+                </select>
+                <input
+                    type="number"
+                    value={minorVersion ?? ''} // null 또는 숫자 → 항상 controlled
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '') {
+                            setMinorVersion(null);
+                        } else if (value.length <= 3) {
+                            setMinorVersion(Number(value));
+                        }
+                    }}
+                    placeholder="마이너"
+                    min={0}
+                    max={999}
+                />
+                <select
+                    value={
+                        isLast === null
+                            ? ''
+                            : isLast
+                                ? 'true'
+                                : 'false'
+                    }
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (value === '') {
+                            setIsLast(null);
+                        } else if (value === 'true') {
+                            setIsLast(true);
+                        } else {
+                            setIsLast(false);
+                        }
+                    }}
+                >
+                    <option value="">전체 조회</option>
+                    <option value="true">마이너 버전 부터 조회</option>
+                    <option value="false">마이너 버전 까지 조회</option>
                 </select>
             </div>
-
+            <div className="date-range-container">
+                <div className="date-picker-wrapper">
+                    <DatePicker
+                        selected={startTime}
+                        onChange={(date) => setStartTime(date)}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="날짜 선택"
+                        className="custom-datepicker"
+                    />
+                </div>
+                <h3 className="separator">~</h3>
+                <div className="date-picker-wrapper">
+                    <DatePicker
+                        selected={endTime}
+                        onChange={(date) => setEndTime(date)}
+                        dateFormat="yyyy-MM-dd"
+                        placeholderText="날짜 선택"
+                        className="custom-datepicker"
+                    />
+                </div>
+            </div>
             <div className="stat-list">
                 <p className="stat-empty">조회된 결과 : {itemData.detailItemStatisticSummaryResponseData.length} 개</p>
                 <p className="stat-empty">{boughtTime == 'BEFORE' ? '스테이지 진입 전' : '스테이지 진입 후'} 아이템 평균 구매 개수 : {itemData.buyingItemCount} 개</p>
