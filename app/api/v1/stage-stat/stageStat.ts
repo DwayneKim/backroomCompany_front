@@ -277,5 +277,23 @@ export const getStoryStagePlaytimeStatistics = async (
     });
 };
 
+export const getDashboardAvgStatistic = async (
+    playerCount: number | null, difficulty: string | null, stageIndex: number | null, stageType: string | null,  startTime: string | null, endTime: string | null, majorVersion: number | null, minorVersion: number | null, isLast: boolean | null,
+) => {
+    return baseClient.get(`/stat/get-dashboard`, {
+        params: {
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType,
+            majorVersion,
+            startTime,
+            endTime,
+            minorVersion,
+            isLast,
+        }
+    });
+};
+
 
 

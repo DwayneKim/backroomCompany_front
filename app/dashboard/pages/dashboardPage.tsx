@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect , useState } from "react";
 import {
-    getCollectItem,
+    getCollectItem, getDashboardAvgStatistic,
     getPlaytimeStatistics,
     getQuotaStatistics, getSoldItem, getStoryStagePlaytimeStatistics,
     getSuccessStatistics
@@ -20,6 +20,11 @@ interface DetailResponse {
 interface SuccessData {
     successCount: number;
     successProbability: number;
+}
+
+interface DashboardAvgStatisticResponse{
+    playCount : number;
+    avgPlayerCount : number;
 }
 
 const DashBoardPage = () => {
@@ -85,6 +90,10 @@ const DashBoardPage = () => {
         max: 0,
         avg: 0.0,
         median: 0,
+    })
+    const [dashboardAvgStatistic, setDashboardAvgStatistic] = useState<DashboardAvgStatisticResponse>({
+        playCount : 0,
+        avgPlayerCount : 0.0,
     })
 
     const getQuotaData = async (
@@ -266,8 +275,37 @@ const DashBoardPage = () => {
             isLast,
         )
 
-        console.log(data.data.content)
         setStoryStagePlaytimeStatistics(data.data.content)
+    }
+
+    const getDashboardAvgStatisticData = async (
+        playerCount: number | null,
+        difficulty: string | null,
+        stageIndex: number | null,
+        stageType: string | null,
+        startTime: Date | null,
+        endTime: Date | null,
+        majorVersion: number | null,
+        minorVersion: number | null,
+        isLast: boolean | null,
+    ) => {
+        const startIsoString = startTime ? startTime.toISOString().split("Z")[0] : null;
+        const endIsoString = endTime ? endTime.toISOString().split("Z")[0] : null;
+
+        const data = await getDashboardAvgStatistic(
+            playerCount,
+            difficulty,
+            stageIndex,
+            stageType,
+            startIsoString,
+            endIsoString,
+            majorVersion,
+            minorVersion,
+            isLast,
+        )
+
+        console.log(data.data.content)
+        setDashboardAvgStatistic(data.data.content)
     }
 
     useEffect(() => {
@@ -277,6 +315,7 @@ const DashBoardPage = () => {
         getCollectItemData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate, version, minorVersion, isLast)
         getSoldItemData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate, version, minorVersion, isLast)
         getStoryStagePlaytimeStatisticsData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate,version, minorVersion, isLast)
+        getDashboardAvgStatisticData(playerCount, difficulty, stageIndex, stageType, selectedStartDate, selectedEndDate,version, minorVersion, isLast)
     },[playerCount, difficulty, quotaSuccess, stageIndex, stageType, selectedStartDate, selectedEndDate, version, minorVersion, isLast])
 
     return (
@@ -394,6 +433,15 @@ const DashBoardPage = () => {
 
             <div className="stat-list">
                 <div className="quota-grid">
+                    {/* 플레이 횟수 및 평균 유저 수 조회 */}
+                    <div className="quota-card">
+                        <h4>플레이 횟수 및 평균 유저 수</h4>
+                        <p></p>
+                        <div className="quota-detail-card">
+                            <p>플레이한 횟수 : {dashboardAvgStatistic.playCount} 회</p>
+                            <p>평균 유저 수 : {dashboardAvgStatistic.avgPlayerCount} 명</p>
+                        </div>
+                    </div>
                     {/* 승리 통계 */}
                     <div className="quota-card">
                         <h4>승리시 초과한 할당량 통계</h4>
