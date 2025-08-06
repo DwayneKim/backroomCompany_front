@@ -7,16 +7,18 @@ import DatePicker from "react-datepicker";
 
 interface DeathData {
     description: string
-    avg: number
-    max: number
-    min: number
-    median: number
+    sum: number
 }
 
 interface DeathStatistics {
     difficulty: string
     stageIndex: number
     deathData: DeathData[]
+}
+
+interface TotalDeathResponse{
+    totalUser: number | null
+    avgDeathCount: number | null
 }
 
 const DeathStatistic = () => {
@@ -35,7 +37,10 @@ const DeathStatistic = () => {
         stageIndex : -1,
         deathData : []
     })
-    const [avgDeathStat, setAvgDeathStat] = useState<number | null>(0.00)
+    const [avgDeathStat, setAvgDeathStat] = useState<TotalDeathResponse>({
+        totalUser: 0,
+        avgDeathCount: 0,
+    })
 
     const getDeathStatisticsData = async (
         playerCount: number | null,
@@ -65,7 +70,8 @@ const DeathStatistic = () => {
             isLast,
         )
 
-        console.log(data.data.content)
+        console.log(data)
+
         setDeathStatistics(data.data.content)
     }
 
@@ -226,7 +232,10 @@ const DeathStatistic = () => {
                     난이도: {deathStatistics.difficulty} / 스테이지: {deathStatistics.stageIndex != -1 ? stageIndex : "전체"}
                 </p>
                 <p className="death-statistics-title">
-                    평균 사망 수 :  {avgDeathStat} 명
+                    총 플레이한 유저 수 :  {avgDeathStat.totalUser} 명
+                </p>
+                <p className="death-statistics-title">
+                    평균 사망 수 :  {avgDeathStat.avgDeathCount} 명
                 </p>
                 <p className="death-statistics-title">
                     조회된 결과: {deathStatistics.deathData.length}개
@@ -236,10 +245,7 @@ const DeathStatistic = () => {
                     {deathStatistics.deathData.map((item, index) => (
                         <div key={index} className="death-statistics-card">
                             <p><strong>사망 원인:</strong> {item.description}</p>
-                            <p><strong>사망 평균값:</strong> {item.avg}</p>
-                            <p><strong>사망 최대값:</strong> {item.max}</p>
-                            <p><strong>사망 최소값:</strong> {item.min}</p>
-                            <p><strong>사망 중위값:</strong> {item.median}</p>
+                            <p><strong>총 사망 횟수:</strong> {item.sum}</p>
                         </div>
                     ))}
                 </div>
